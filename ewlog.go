@@ -34,12 +34,31 @@ func InitLog(out io.Writer, level int) {
 	ewlog.logLevel = level
 }
 
+func Debug(v interface{}) {
+	if ewlog.logLevel > DEBUG {
+		return
+	}
+	for _, tlog := range ewlog.logs {
+		tlog.Printf("Debug %v", v)
+	}
+}
+
 func Debugf(format string, v ...interface{}) {
 	if ewlog.logLevel > DEBUG {
 		return
 	}
 	for _, tlog := range ewlog.logs {
 		tlog.Printf("Debug "+format, v)
+	}
+}
+
+func Info(v interface{}) {
+	if ewlog.logLevel > INFO {
+		return
+	}
+
+	for _, tlog := range ewlog.logs {
+		tlog.Printf("Info %v", v)
 	}
 }
 
@@ -53,12 +72,31 @@ func Infof(format string, v ...interface{}) {
 	}
 }
 
+func Error(v interface{}) {
+	if ewlog.logLevel > ERROR {
+		return
+	}
+	for _, tlog := range ewlog.logs {
+		tlog.Printf("Error %v", v)
+	}
+}
+
 func Errorf(format string, v ...interface{}) {
 	if ewlog.logLevel > ERROR {
 		return
 	}
 	for _, tlog := range ewlog.logs {
 		tlog.Printf("Error "+format, v)
+	}
+}
+
+func Fatal(v interface{}) {
+	if ewlog.logLevel > FATAL {
+		return
+	}
+
+	for _, tlog := range ewlog.logs {
+		tlog.Fatalf("Fatal %v", v)
 	}
 }
 
