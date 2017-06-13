@@ -9,6 +9,7 @@ import (
 const (
 	DEBUG = 1 << iota
 	INFO
+	WARN
 	ERROR
 	FATAL
 )
@@ -48,7 +49,7 @@ func Debugf(format string, v ...interface{}) {
 		return
 	}
 	for _, tlog := range ewlog.logs {
-		tlog.Printf("Debug "+format, v)
+		tlog.Printf("Debug "+format, v...)
 	}
 }
 
@@ -68,7 +69,27 @@ func Infof(format string, v ...interface{}) {
 	}
 
 	for _, tlog := range ewlog.logs {
-		tlog.Printf("Info "+format, v)
+		tlog.Printf("Info "+format, v...)
+	}
+}
+
+func Warn(v interface{}) {
+	if ewlog.logLevel > WARN {
+		return
+	}
+
+	for _, tlog := range ewlog.logs {
+		tlog.Printf("Warn %v", v)
+	}
+}
+
+func Warnf(format string, v ...interface{}) {
+	if ewlog.logLevel > WARN {
+		return
+	}
+
+	for _, tlog := range ewlog.logs {
+		tlog.Printf("Warn "+format, v...)
 	}
 }
 
@@ -86,7 +107,7 @@ func Errorf(format string, v ...interface{}) {
 		return
 	}
 	for _, tlog := range ewlog.logs {
-		tlog.Printf("Error "+format, v)
+		tlog.Printf("Error "+format, v...)
 	}
 }
 
@@ -106,6 +127,6 @@ func Fatalf(format string, v ...interface{}) {
 	}
 
 	for _, tlog := range ewlog.logs {
-		tlog.Fatalf("Fatal "+format, v)
+		tlog.Fatalf("Fatal "+format, v...)
 	}
 }
