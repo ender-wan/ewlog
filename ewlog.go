@@ -1,5 +1,4 @@
 // Package ewlog provides a simple log tool for multiple output
-
 package ewlog
 
 import (
@@ -8,7 +7,9 @@ import (
 	"os"
 )
 
+// These flags define which log will be printed
 const (
+	// DEBUG level
 	DEBUG = 1 << iota
 	INFO
 	WARN
@@ -118,6 +119,7 @@ func Errorf(format string, v ...interface{}) {
 	}
 }
 
+// Fatal is equivalent to l.Print() followed by a call to os.Exit(1).
 func Fatal(v interface{}) {
 	if ewlog.logLevel > FATAL {
 		return
@@ -128,6 +130,7 @@ func Fatal(v interface{}) {
 	}
 }
 
+// Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
 func Fatalf(format string, v ...interface{}) {
 	if ewlog.logLevel > FATAL {
 		return
