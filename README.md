@@ -1,16 +1,32 @@
-### Simple log for multiple output
+### ewlog
+Simple log for multiple output
 
+### Doc
 
-#### without InitLog will output to stdout
+- [API Reference](http://godoc.org/github.com/ender-wan/ewlog)
+
+### Installation
+
+go get github.com/ender-wan/ewlog
+
+### Example
 ```
-logfile, err := os.OpenFile("LogFile", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-if err != nil {
-    fmt.Println(err)
-    return
+func main() {
+    logfile, err := os.OpenFile("LogFile", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    defer logfile.Close()
+
+    ewlog.SetLogLevel(1)
+    ewlog.AddLogOutput(logfile)
+
+    ewlog.Info("ewlog")
 }
-defer logfile.Close()
 
-ewlog.InitLog(logfile, 2)
-
-ewlog.Info("add")
+```
+ output
+```
+2017/06/15 08:48:59 Info ewlog
 ```
