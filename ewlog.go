@@ -50,15 +50,19 @@ func logHead(level int) string {
 		lv = "[Unknown]"
 	}
 
-	_, file, line, ok := runtime.Caller(3)
+	funcname := ""
+
+	function, file, line, ok := runtime.Caller(3)
 	if !ok {
 		file = "???"
 		line = 0
+	} else {
+		funcname = runtime.FuncForPC(function).Name()
 	}
 
 	file = shortFile(file)
 
-	head := fmt.Sprintf("%s:%d %s - ", file, line, lv)
+	head := fmt.Sprintf("%s:%d %s %s - ", file, line, funcname, lv)
 
 	return head
 }

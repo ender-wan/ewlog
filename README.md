@@ -27,7 +27,7 @@ func main() {
 }
 
 ```
- output
+ output example
 ```
-2017/06/15 08:48:59 Info ewlog
+2017/06/16 17:19:45 main.go:13 main.main [Info] - ewlog
 ```
