@@ -2,9 +2,11 @@
 package ewlog
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
+	"runtime"
 )
 
 // These flags define which log will be printed
@@ -26,9 +28,49 @@ var ewlog *ewlogT
 
 func init() {
 	ewlog = &ewlogT{
-		logs:     []*log.Logger{log.New(os.Stdout, "", 3)},
+		logs:     []*log.Logger{log.New(os.Stdout, "", log.LstdFlags)},
 		logLevel: INFO,
 	}
+}
+
+func logHead(level int) string {
+	var lv string
+	switch level {
+	case DEBUG:
+		lv = "[Debug]"
+	case INFO:
+		lv = "[Info]"
+	case WARN:
+		lv = "[Warn]"
+	case ERROR:
+		lv = "[Error]"
+	case FATAL:
+		lv = "[Fatal]"
+	default:
+		lv = "[Unknown]"
+	}
+
+	_, file, line, ok := runtime.Caller(3)
+	if !ok {
+		file = "???"
+		line = 0
+	}
+
+	file = shortFile(file)
+
+	head := fmt.Sprintf("%s:%d %s - ", file, line, lv)
+
+	return head
+}
+
+func shortFile(file string) string {
+	for i := len(file) - 1; i >= 0; i-- {
+		if file[i] == '/' {
+			return file[i+1:]
+		}
+	}
+
+	return ""
 }
 
 // SetLogLevel set output log level
@@ -38,105 +80,76 @@ func SetLogLevel(level int) {
 
 // AddLogOutput add a writer to output log
 func AddLogOutput(out io.Writer) {
-	elog := log.New(out, "", 3)
+	elog := log.New(out, "", log.LstdFlags)
 	elog.SetOutput(out)
 	ewlog.logs = append(ewlog.logs, elog)
 }
 
-func Debug(v interface{}) {
-	if ewlog.logLevel > DEBUG {
+func output(level int, v ...interface{}) {
+	if ewlog.logLevel > level {
 		return
 	}
+
+	head := logHead(level)
+	v = append([]interface{}{head}, v...)
+
 	for _, tlog := range ewlog.logs {
-		tlog.Printf("Debug %v", v)
+		tlog.Print(v...)
 	}
+}
+
+func outputf(level int, format string, v ...interface{}) {
+	if ewlog.logLevel > level {
+		return
+	}
+
+	head := logHead(level)
+
+	for _, tlog := range ewlog.logs {
+		tlog.Printf(head+format, v...)
+	}
+}
+
+func Debug(v ...interface{}) {
+	output(DEBUG, v...)
 }
 
 func Debugf(format string, v ...interface{}) {
-	if ewlog.logLevel > DEBUG {
-		return
-	}
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Debug "+format, v...)
-	}
+	outputf(DEBUG, format, v...)
 }
 
-func Info(v interface{}) {
-	if ewlog.logLevel > INFO {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Info %v", v)
-	}
+func Info(v ...interface{}) {
+	output(INFO, v...)
 }
 
 func Infof(format string, v ...interface{}) {
-	if ewlog.logLevel > INFO {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Info "+format, v...)
-	}
+	outputf(INFO, format, v...)
 }
 
-func Warn(v interface{}) {
-	if ewlog.logLevel > WARN {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Warn %v", v)
-	}
+func Warn(v ...interface{}) {
+	output(WARN, v...)
 }
 
 func Warnf(format string, v ...interface{}) {
-	if ewlog.logLevel > WARN {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Warn "+format, v...)
-	}
+	outputf(WARN, format, v...)
 }
 
-func Error(v interface{}) {
-	if ewlog.logLevel > ERROR {
-		return
-	}
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Error %v", v)
-	}
+func Error(v ...interface{}) {
+	output(ERROR, v...)
 }
 
 func Errorf(format string, v ...interface{}) {
-	if ewlog.logLevel > ERROR {
-		return
-	}
-	for _, tlog := range ewlog.logs {
-		tlog.Printf("Error "+format, v...)
-	}
+	outputf(ERROR, format, v...)
 }
 
 // Fatal is equivalent to l.Print() followed by a call to os.Exit(1).
-func Fatal(v interface{}) {
-	if ewlog.logLevel > FATAL {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Fatalf("Fatal %v", v)
-	}
+func Fatal(v ...interface{}) {
+	output(FATAL, v...)
+	os.Exit(1)
 }
 
 // Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
 func Fatalf(format string, v ...interface{}) {
-	if ewlog.logLevel > FATAL {
-		return
-	}
-
-	for _, tlog := range ewlog.logs {
-		tlog.Fatalf("Fatal "+format, v...)
-	}
+	outputf(FATAL, format, v...)
+	os.Exit(1)
 }

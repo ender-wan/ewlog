@@ -4,6 +4,7 @@ Simple log for multiple output
 ### Doc
 
 - [API Reference](http://godoc.org/github.com/ender-wan/ewlog)
+- [Examples](https://godoc.org/github.com/ender-wan/ewlog#example-AddLogOutput)
 
 ### Installation
 
