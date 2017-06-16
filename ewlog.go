@@ -1,3 +1,5 @@
+// Package ewlog provides a simple log tool for multiple output
+
 package ewlog
 
 import (
@@ -28,11 +30,16 @@ func init() {
 	}
 }
 
-func InitLog(out io.Writer, level int) {
+// SetLogLevel set output log level
+func SetLogLevel(level int) {
+	ewlog.logLevel = level
+}
+
+// AddLogOutput add a writer to output log
+func AddLogOutput(out io.Writer) {
 	elog := log.New(out, "", 3)
 	elog.SetOutput(out)
 	ewlog.logs = append(ewlog.logs, elog)
-	ewlog.logLevel = level
 }
 
 func Debug(v interface{}) {
