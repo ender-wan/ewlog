@@ -1,16 +1,21 @@
-### ewlog
+ewlog
+=====
+
 Simple log for multiple output
 
-### Doc
+Doc
+-----
 
 - [API Reference](http://godoc.org/github.com/ender-wan/ewlog)
 - [Examples](https://godoc.org/github.com/ender-wan/ewlog#example-AddLogOutput)
 
-### Installation
+Installation
+-----
 
 go get github.com/ender-wan/ewlog
 
-### Example
+Example
+-----
 ```
 func main() {
     logfile, err := os.OpenFile("LogFile", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
